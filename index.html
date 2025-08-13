@@ -146,12 +146,48 @@
         
         /* New styles for the chat interface */
         .chat-container {
+            position: relative;
             display: flex;
             flex-direction: column;
             height: 600px;
             border: 1px solid #e5e7eb;
             border-radius: 1rem;
             overflow: hidden;
+        }
+        
+        .chat-header {
+            background-color: #2563eb;
+            color: white;
+            padding: 0.75rem 1rem;
+            border-radius: 1rem 1rem 0 0;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .chat-header h2 {
+            margin: 0;
+            color: white;
+        }
+
+        .chat-toggle-icon {
+            font-size: 1.5rem;
+            transition: transform 0.3s;
+        }
+        
+        .chat-container.collapsed .chat-toggle-icon {
+            transform: rotate(180deg);
+        }
+
+        .chat-body {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .chat-container.collapsed .chat-body {
+            display: none;
         }
 
         .chat-history {
@@ -160,32 +196,53 @@
             overflow-y: auto;
             background-color: #f9fafb;
         }
-
+        
         .chat-message {
             margin-bottom: 1rem;
             display: flex;
+            position: relative;
         }
-        
+
         .chat-message.user {
             justify-content: flex-end;
         }
 
+        .chat-message .message-bubble {
+            max-width: 70%;
+            padding: 0.75rem;
+            border-radius: 1rem;
+            position: relative;
+        }
+        
         .chat-message.user .message-bubble {
             background-color: #3b82f6;
             color: white;
             border-radius: 1rem 1rem 0 1rem;
-            max-width: 70%;
-            padding: 0.75rem;
         }
 
         .chat-message.ai .message-bubble {
             background-color: #e5e7eb;
             color: #1f2937;
             border-radius: 1rem 1rem 1rem 0;
-            max-width: 70%;
-            padding: 0.75rem;
+            display: flex;
+            flex-direction: column;
+            flex-wrap: wrap;
+        }
+
+        .chat-message.ai .audio-controls {
+            margin-top: 0.5rem;
         }
         
+        .chat-message .correction {
+            background-color: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 0.5rem 1rem;
+            margin-top: 0.5rem;
+            border-radius: 0.5rem;
+            font-size: 0.9rem;
+            color: #78350f;
+        }
+
         .chat-input {
             display: flex;
             padding: 1rem;
@@ -215,10 +272,33 @@
             border-radius: 9999px;
             cursor: pointer;
             transition: background-color 0.2s;
+            margin-left: 0.25rem;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-
+        
         .chat-input button:hover {
             background-color: #1e40af;
+        }
+        
+        .chat-input button:disabled {
+            background-color: #9ca3af;
+            cursor: not-allowed;
+        }
+        
+        .chat-bubble-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            margin-left: 0.5rem;
+            color: #6b7280;
+            transition: color 0.2s;
+        }
+        
+        .chat-bubble-button:hover {
+            color: #2563eb;
         }
 
         .error-message {
@@ -232,6 +312,100 @@
             text-align: center;
             padding: 1rem;
             font-size: 0.875rem;
+            color: #6b7280;
+        }
+        
+        .loading-indicator-bubble {
+            background-color: #e5e7eb;
+            color: #1f2937;
+            border-radius: 1rem 1rem 1rem 0;
+            padding: 0.75rem;
+            max-width: 70%;
+            display: inline-block;
+            animation: pulse 1.5s infinite ease-in-out;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .selectable-word {
+            display: inline-block;
+            cursor: pointer;
+            padding: 0 2px;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+            line-height: 1.6;
+        }
+
+        .selectable-word:hover {
+            background-color: #c9dffc;
+        }
+
+        .selectable-word.active {
+            background-color: #2563eb;
+            color: white;
+        }
+
+        /* Modal for flashcard creation */
+        .flashcard-modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            justify-content: center;
+            align-items: center;
+        }
+        .flashcard-modal-content {
+            background-color: #fefefe;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            max-width: 400px;
+            text-align: center;
+            position: relative;
+        }
+        .flashcard-modal-content h3 {
+            margin-top: 0;
+        }
+        .flashcard-modal-content input {
+            width: 90%;
+            padding: 8px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        .flashcard-modal-content .modal-buttons {
+            display: flex;
+            justify-content: space-around;
+        }
+        .flashcard-modal-content .modal-buttons button {
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .flashcard-modal-content .modal-buttons button:hover {
+            background-color: #1e40af;
+        }
+        .flashcard-modal-content .modal-buttons button.cancel {
+            background-color: #ef4444;
+        }
+        .flashcard-modal-content .modal-buttons button.cancel:hover {
+            background-color: #dc2626;
+        }
+        .no-flashcards-message {
+            text-align: center;
+            font-style: italic;
             color: #6b7280;
         }
     </style>
@@ -257,13 +431,29 @@
         <p>&copy; 2025 Langua-App. All rights reserved.</p>
     </footer>
 
+    <!-- Flashcard Modal -->
+    <div id="flashcard-modal" class="flashcard-modal">
+        <div class="flashcard-modal-content">
+            <h3>Add to Flashcards</h3>
+            <p>German Word: <strong id="modal-german-word"></strong></p>
+            <input type="text" id="modal-english-translation" placeholder="Enter English translation">
+            <div class="modal-buttons">
+                <button id="modal-save-btn">Save</button>
+                <button id="modal-cancel-btn" class="cancel">Cancel</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Main application logic
         const contentDiv = document.getElementById('app-content');
         const navButtons = document.querySelectorAll('nav button');
         let chatHistory = [];
+        let isRecording = false;
+        let lastUserMessage = '';
         
-        const mockFlashcards = [
+        // Mock data to start with if no flashcards are in localStorage
+        const initialFlashcards = [
             { german: "Guten Tag", english: "Good day" },
             { german: "Ich bin", english: "I am" },
             { german: "Wasser", english: "Water" },
@@ -272,8 +462,123 @@
             { german: "Auto", english: "Car" },
             { german: "Haus", english: "House" },
         ];
+
+        let flashcards = JSON.parse(localStorage.getItem('flashcards')) || initialFlashcards;
         let currentCardIndex = 0;
         
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        
+        // Utility functions for Text-to-Speech audio processing
+        function base64ToArrayBuffer(base64) {
+            const binaryString = window.atob(base64);
+            const len = binaryString.length;
+            const bytes = new Uint8Array(len);
+            for (let i = 0; i < len; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+            return bytes.buffer;
+        }
+
+        function pcmToWav(pcm16, sampleRate) {
+            const buffer = new ArrayBuffer(44 + pcm16.length * 2);
+            const view = new DataView(buffer);
+
+            // WAV header
+            writeString(view, 0, 'RIFF');
+            view.setUint32(4, 36 + pcm16.length * 2, true);
+            writeString(view, 8, 'WAVE');
+            writeString(view, 12, 'fmt ');
+            view.setUint32(16, 16, true);
+            view.setUint16(20, 1, true);
+            view.setUint16(22, 1, true);
+            view.setUint32(24, sampleRate, true);
+            view.setUint32(28, sampleRate * 2, true);
+            view.setUint16(32, 2, true);
+            view.setUint16(34, 16, true);
+            writeString(view, 36, 'data');
+            view.setUint32(40, pcm16.length * 2, true);
+
+            // PCM data
+            let offset = 44;
+            for (let i = 0; i < pcm16.length; i++, offset += 2) {
+                view.setInt16(offset, pcm16[i], true);
+            }
+
+            return new Blob([view], { type: 'audio/wav' });
+        }
+
+        function writeString(view, offset, string) {
+            for (let i = 0; i < string.length; i++) {
+                view.setUint8(offset + i, string.charCodeAt(i));
+            }
+        }
+        
+        // Function to play audio from a base64 string
+        async function playAudioFromBase64(audioData, mimeType) {
+            if (!audioData) return;
+
+            try {
+                const sampleRate = parseInt(mimeType.match(/rate=(\d+)/)[1], 10);
+                const pcmData = base64ToArrayBuffer(audioData);
+                const pcm16 = new Int16Array(pcmData);
+                
+                const wavBlob = pcmToWav(pcm16, sampleRate);
+                const audioUrl = URL.createObjectURL(wavBlob);
+                const audio = new Audio(audioUrl);
+                audio.play();
+
+            } catch (error) {
+                console.error("Error playing audio:", error);
+            }
+        }
+        
+        async function playAiMessage(text) {
+            if (!text) return;
+
+            const payload = {
+                contents: [{
+                    parts: [{ text: `Say in a friendly, helpful tutor voice: ${text}` }]
+                }],
+                generationConfig: {
+                    responseModalities: ["AUDIO"],
+                    speechConfig: {
+                        voiceConfig: {
+                            prebuiltVoiceConfig: { voiceName: "Algieba" }
+                        }
+                    }
+                },
+                model: "gemini-2.5-flash-preview-tts"
+            };
+            const apiKey = "";
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                const part = result?.candidates?.[0]?.content?.parts?.[0];
+                const audioData = part?.inlineData?.data;
+                const mimeType = part?.inlineData?.mimeType;
+
+                if (audioData && mimeType && mimeType.startsWith("audio/")) {
+                    await playAudioFromBase64(audioData, mimeType);
+                } else {
+                    console.error("No audio data received or invalid format.");
+                }
+            } catch (error) {
+                console.error("Error with TTS API call:", error);
+            }
+        }
+
+
         // Function to render the home page
         function renderHome() {
             contentDiv.innerHTML = `
@@ -302,6 +607,17 @@
 
         // Function to render the flashcards page
         function renderFlashcards() {
+            // Load flashcards from localStorage or use initial data
+            flashcards = JSON.parse(localStorage.getItem('flashcards')) || initialFlashcards;
+            
+            if (flashcards.length === 0) {
+                contentDiv.innerHTML = `
+                    <h2 style="font-size: 2rem; text-align: center; color: #2563eb;">German Flashcards</h2>
+                    <p class="no-flashcards-message">You haven't created any flashcards yet! Head to the Chat and click on a word to add one.</p>
+                `;
+                return;
+            }
+
             contentDiv.innerHTML = `
                 <h2 style="font-size: 2rem; text-align: center; color: #2563eb;">German Flashcards</h2>
                 <div class="card-container">
@@ -328,18 +644,20 @@
             const nextBtn = document.getElementById('next-btn');
 
             function updateCardContent() {
-                frontText.textContent = mockFlashcards[currentCardIndex].english;
-                backText.textContent = mockFlashcards[currentCardIndex].german;
-                flashcard.classList.remove('flipped');
+                if (flashcards.length > 0) {
+                    frontText.textContent = flashcards[currentCardIndex].english;
+                    backText.textContent = flashcards[currentCardIndex].german;
+                    flashcard.classList.remove('flipped');
+                }
             }
 
             flashcard.addEventListener('click', () => flashcard.classList.toggle('flipped'));
             prevBtn.addEventListener('click', () => {
-                currentCardIndex = (currentCardIndex - 1 + mockFlashcards.length) % mockFlashcards.length;
+                currentCardIndex = (currentCardIndex - 1 + flashcards.length) % flashcards.length;
                 updateCardContent();
             });
             nextBtn.addEventListener('click', () => {
-                currentCardIndex = (currentCardIndex + 1) % mockFlashcards.length;
+                currentCardIndex = (currentCardIndex + 1) % flashcards.length;
                 updateCardContent();
             });
             updateCardContent();
@@ -363,55 +681,221 @@
         // Function to render the chat page
         function renderChat() {
             contentDiv.innerHTML = `
-                <h2 style="font-size: 2rem; text-align: center; color: #2563eb;">AI Tutor</h2>
                 <div class="chat-container">
-                    <div class="chat-history" id="chat-history">
-                        <div class="chat-message ai">
-                            <div class="message-bubble">Hello! I'm your German AI tutor. Feel free to ask me anything about German language, grammar, or culture.</div>
-                        </div>
+                    <div class="chat-header" id="chat-header">
+                        <h2 style="color:white; margin:0; font-size:1.5rem;">AI Tutor</h2>
+                        <span id="chat-toggle-icon" class="chat-toggle-icon">&#9660;</span>
                     </div>
-                    <div class="chat-input">
-                        <input type="text" id="chat-input-field" placeholder="Say something in German...">
-                        <button id="send-btn">Send</button>
+                    <div class="chat-body" id="chat-body">
+                        <div class="chat-history" id="chat-history">
+                            <div class="chat-message ai">
+                                <div class="message-bubble">
+                                    Hello! I'm your German AI tutor. Feel free to ask me anything about German language, grammar, or culture.
+                                    <div class="audio-controls">
+                                        <button class="chat-bubble-button play-audio-btn" title="Play audio">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                                <path d="M3 22v-20l18 10-18 10z"/>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chat-input">
+                            <button id="mic-btn" class="chat-input-button" title="Speak to the AI">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.02-3.02c0 3.5-2.88 6.02-6.02 6.02s-6.02-2.52-6.02-6.02H4c0 4.41 3.58 8.02 8 8.02s8-3.61 8-8.02h-2.98zM12 21c-1.38 0-2.48-1.12-2.48-2.5h-.02c0-1.38 1.12-2.5 2.5-2.5S14.5 17.12 14.5 18.5H12c-1.1 0-2 .9-2 2z"/>
+                                </svg>
+                            </button>
+                            <input type="text" id="chat-input-field" placeholder="Type or speak a message...">
+                            <button id="send-btn" class="chat-input-button" title="Send message">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                                </svg>
+                            </button>
+                        </div>
                     </div>
                 </div>
                 <p id="error-message" class="error-message" style="display:none;"></p>
             `;
 
+            const chatContainer = document.querySelector('.chat-container');
+            const chatHeader = document.getElementById('chat-header');
             const chatHistoryEl = document.getElementById('chat-history');
             const chatInputField = document.getElementById('chat-input-field');
             const sendBtn = document.getElementById('send-btn');
+            const micBtn = document.getElementById('mic-btn');
             const errorMessageEl = document.getElementById('error-message');
 
             const modelName = "gemini-2.5-flash-preview-05-20";
             const apiKey = "";
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
 
+            chatHeader.addEventListener('click', () => {
+                chatContainer.classList.toggle('collapsed');
+            });
+
+            // Function to save a new flashcard to local storage
+            function saveFlashcard(german, english) {
+                flashcards = JSON.parse(localStorage.getItem('flashcards')) || initialFlashcards;
+                const newFlashcard = { german: german, english: english };
+                flashcards.push(newFlashcard);
+                localStorage.setItem('flashcards', JSON.stringify(flashcards));
+                console.log('New flashcard added:', newFlashcard);
+            }
+
             // Function to display a message in the chat
             function addMessageToChat(role, text) {
                 const messageEl = document.createElement('div');
                 messageEl.className = `chat-message ${role}`;
-                messageEl.innerHTML = `<div class="message-bubble">${text}</div>`;
+                
+                const messageBubble = document.createElement('div');
+                messageBubble.className = 'message-bubble';
+
+                if (role === 'ai') {
+                    // Split text into words and make them clickable
+                    const words = text.split(/(\s+)/); // Split while keeping spaces
+                    words.forEach(word => {
+                        if (word.trim() !== '') {
+                            const wordSpan = document.createElement('span');
+                            wordSpan.className = 'selectable-word';
+                            wordSpan.textContent = word;
+                            wordSpan.addEventListener('click', (e) => {
+                                // Deselect all other words
+                                document.querySelectorAll('.selectable-word.active').forEach(w => w.classList.remove('active'));
+                                // Highlight the clicked word
+                                wordSpan.classList.add('active');
+                                openFlashcardModal(word.trim(), e.clientX, e.clientY);
+                            });
+                            messageBubble.appendChild(wordSpan);
+                        } else {
+                            messageBubble.appendChild(document.createTextNode(word));
+                        }
+                    });
+
+                    // Add a button to play the audio
+                    const audioControls = document.createElement('div');
+                    audioControls.className = 'audio-controls';
+                    const playButton = document.createElement('button');
+                    playButton.className = 'chat-bubble-button play-audio-btn';
+                    playButton.title = 'Play audio';
+                    playButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M3 22v-20l18 10-18 10z"/>
+                    </svg>`;
+                    playButton.addEventListener('click', () => playAiMessage(text));
+                    audioControls.appendChild(playButton);
+                    
+                    const correctionButton = document.createElement('button');
+                    correctionButton.className = 'chat-bubble-button correction-btn';
+                    correctionButton.title = 'Get correction';
+                    correctionButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M22.7 14.2l-3.9-3.9c-.3-.3-.7-.4-1.1-.4H15l1.6 1.6c.3.3.4.7.4 1.1s-.1.8-.4 1.1l-3.9 3.9c-.3.3-.7.4-1.1.4s-.8-.1-1.1-.4l-3.9-3.9c-.3-.3-.4-.7-.4-1.1s.1-.8.4-1.1l1.6-1.6V8.7c0-.4.1-.8.4-1.1l3.9-3.9c.3-.3.7-.4 1.1-.4s.8.1 1.1.4l3.9 3.9c.3.3.4.7.4 1.1s-.1.8-.4 1.1l-1.6 1.6h2.7c.4 0 .8.1 1.1.4l3.9 3.9c.3.3.4.7.4 1.1s-.1.8-.4 1.1zM11.5 18.5l-3.5 3.5c-.3.3-.7.4-1.1.4s-.8-.1-1.1-.4l-3.5-3.5c-.3-.3-.4-.7-.4-1.1s.1-.8.4-1.1l3.5-3.5c.3-.3.7-.4 1.1-.4s.8.1 1.1.4l3.5 3.5c.3.3.4.7.4 1.1s-.1.8-.4 1.1z"/></svg>`;
+                    correctionButton.addEventListener('click', () => getCorrection(lastUserMessage, messageBubble));
+                    audioControls.appendChild(correctionButton);
+                    
+                    messageBubble.appendChild(audioControls);
+
+                } else if (role === 'user') {
+                    messageBubble.textContent = text;
+                    lastUserMessage = text;
+                }
+                
+                messageEl.appendChild(messageBubble);
                 chatHistoryEl.appendChild(messageEl);
                 chatHistoryEl.scrollTop = chatHistoryEl.scrollHeight; // Auto-scroll to the bottom
             }
+
+            // Function to open the flashcard creation modal
+            function openFlashcardModal(germanWord) {
+                const modal = document.getElementById('flashcard-modal');
+                const germanWordEl = document.getElementById('modal-german-word');
+                const englishInput = document.getElementById('modal-english-translation');
+                const saveBtn = document.getElementById('modal-save-btn');
+                const cancelBtn = document.getElementById('modal-cancel-btn');
+                
+                germanWordEl.textContent = germanWord;
+                englishInput.value = '';
+                modal.style.display = 'flex';
+                
+                // Event listener to save the new flashcard
+                const handleSave = () => {
+                    const englishTranslation = englishInput.value.trim();
+                    if (englishTranslation) {
+                        saveFlashcard(germanWord, englishTranslation);
+                        modal.style.display = 'none';
+                        document.querySelectorAll('.selectable-word.active').forEach(w => w.classList.remove('active'));
+                    } else {
+                        alert('Please enter an English translation.');
+                    }
+                };
+
+                saveBtn.onclick = handleSave;
+                englishInput.onkeypress = (e) => {
+                    if (e.key === 'Enter') {
+                        handleSave();
+                    }
+                };
+                
+                cancelBtn.onclick = () => {
+                    modal.style.display = 'none';
+                    document.querySelectorAll('.selectable-word.active').forEach(w => w.classList.remove('active'));
+                };
+            }
+
+            // Function to handle the correction request
+            async function getCorrection(userText, messageBubble) {
+                if (!userText) return;
+                
+                const prompt = `Please correct the following German sentence: "${userText}". First, explain the error, and then provide a better, more natural alternative. Keep the explanation brief and the suggestion concise.`;
+                
+                // Add a temporary loading indicator for the correction
+                const correctionLoading = document.createElement('div');
+                correctionLoading.className = 'correction';
+                correctionLoading.textContent = 'Correcting...';
+                messageBubble.appendChild(correctionLoading);
+
+                const payload = { contents: [{ role: "user", parts: [{ text: prompt }] }] };
+
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const result = await response.json();
+                    
+                    if (result.candidates && result.candidates.length > 0 &&
+                        result.candidates[0].content && result.candidates[0].content.parts &&
+                        result.candidates[0].content.parts.length > 0) {
+                        const correctionText = result.candidates[0].content.parts[0].text;
+                        correctionLoading.textContent = correctionText;
+                    } else {
+                        correctionLoading.textContent = "Could not get a correction at this time.";
+                    }
+
+                } catch (error) {
+                    console.error("Correction API call failed:", error);
+                    correctionLoading.textContent = "An error occurred while getting the correction.";
+                }
+            }
+
 
             // Function to send a message to the AI
             async function sendMessage() {
                 const userText = chatInputField.value.trim();
                 if (userText === "") return;
 
-                // Display user's message
                 addMessageToChat('user', userText);
                 chatInputField.value = '';
 
-                // Add user's message to chat history
                 chatHistory.push({ role: "user", parts: [{ text: userText }] });
 
-                // Display loading indicator
-                addMessageToChat('ai', '<div id="loading-indicator">Thinking...</div>');
+                addMessageToChat('ai', '<div class="loading-indicator-bubble">Thinking...</div>');
 
-                // Prepare API request payload
                 const payload = { contents: chatHistory };
 
                 try {
@@ -427,8 +911,7 @@
                     
                     const result = await response.json();
                     
-                    // Remove loading indicator
-                    const loadingIndicator = document.getElementById('loading-indicator');
+                    const loadingIndicator = chatHistoryEl.querySelector('.loading-indicator-bubble');
                     if(loadingIndicator) loadingIndicator.parentElement.parentElement.remove();
                     
                     if (result.candidates && result.candidates.length > 0 &&
@@ -441,8 +924,7 @@
                         throw new Error("Invalid response format from API.");
                     }
                 } catch (error) {
-                    // Remove loading indicator on error
-                    const loadingIndicator = document.getElementById('loading-indicator');
+                    const loadingIndicator = chatHistoryEl.querySelector('.loading-indicator-bubble');
                     if(loadingIndicator) loadingIndicator.parentElement.parentElement.remove();
                     
                     console.error("API call failed:", error);
@@ -450,6 +932,52 @@
                     errorMessageEl.style.display = 'block';
                 }
             }
+            
+            // Speech Recognition logic
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (SpeechRecognition) {
+                const recognition = new SpeechRecognition();
+                recognition.continuous = false;
+                recognition.lang = 'de-DE'; // Set to German
+
+                micBtn.addEventListener('click', () => {
+                    if (!isRecording) {
+                        isRecording = true;
+                        micBtn.style.color = '#ef4444'; // Red for recording
+                        recognition.start();
+                    } else {
+                        isRecording = false;
+                        micBtn.style.color = 'currentColor';
+                        recognition.stop();
+                    }
+                });
+                
+                recognition.onstart = () => {
+                    chatInputField.placeholder = 'Listening...';
+                };
+                
+                recognition.onresult = (event) => {
+                    const transcript = event.results[0][0].transcript;
+                    chatInputField.value = transcript;
+                };
+
+                recognition.onend = () => {
+                    isRecording = false;
+                    micBtn.style.color = 'currentColor';
+                    chatInputField.placeholder = 'Type or speak a message...';
+                };
+                
+                recognition.onerror = (event) => {
+                    isRecording = false;
+                    micBtn.style.color = 'currentColor';
+                    chatInputField.placeholder = 'Type or speak a message...';
+                    console.error('Speech recognition error:', event.error);
+                };
+            } else {
+                console.warn("Speech Recognition not supported in this browser.");
+                micBtn.style.display = 'none'; // Hide the mic button if not supported
+            }
+
 
             sendBtn.addEventListener('click', sendMessage);
             chatInputField.addEventListener('keypress', (e) => {
@@ -458,7 +986,6 @@
                 }
             });
 
-            // Initialize chat history with the welcome message
             chatHistory = [{
                 role: "model",
                 parts: [{ text: "Hello! I'm your German AI tutor. Feel free to ask me anything about German language, grammar, or culture." }]
