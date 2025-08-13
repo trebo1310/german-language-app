@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>German Language App</title>
+    <style>
+        /* Basic CSS for a clean, modern look */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f3f4f6;
+            color: #1f2937;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        header {
+            background-color: #2563eb;
+            color: white;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 0 0 1rem 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        header .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        nav button {
+            background: none;
+            border: none;
+            color: white;
+            padding: 0.5rem 1rem;
+            margin: 0 0.25rem;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 9999px;
+            transition: background-color 0.2s;
+        }
+        
+        nav button.active, nav button:hover {
+            background-color: #1e40af;
+        }
+
+        main {
+            min-height: calc(100vh - 100px);
+            padding: 2rem 0;
+        }
+        
+        .content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        
+        .content h1, .content h2, .content h3 {
+            color: #1e40af;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+        
+        .card-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 400px; /* fixed height for card container */
+        }
+
+        .flashcard {
+            width: 100%;
+            max-width: 400px;
+            height: 250px;
+            perspective: 1000px;
+            margin-bottom: 2rem;
+            cursor: pointer;
+        }
+
+        .flashcard-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+
+        .flashcard.flipped .flashcard-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-front, .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 1rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .flashcard-front {
+            background-color: #ffffff;
+            color: #1f2937;
+        }
+
+        .flashcard-back {
+            background-color: #bfdbfe;
+            color: #1e40af;
+            transform: rotateY(180deg);
+        }
+        
+        .card-controls {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .card-controls button {
+            background-color: #d1d5db;
+            color: #4b5563;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 9999px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+
+        .card-controls button:hover {
+            background-color: #9ca3af;
+        }
+        
+        /* New styles for the chat interface */
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 600px;
+            border: 1px solid #e5e7eb;
+            border-radius: 1rem;
+            overflow: hidden;
+        }
+
+        .chat-history {
+            flex-grow: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            background-color: #f9fafb;
+        }
+
+        .chat-message {
+            margin-bottom: 1rem;
+            display: flex;
+        }
+        
+        .chat-message.user {
+            justify-content: flex-end;
+        }
+
+        .chat-message.user .message-bubble {
+            background-color: #3b82f6;
+            color: white;
+            border-radius: 1rem 1rem 0 1rem;
+            max-width: 70%;
+            padding: 0.75rem;
+        }
+
+        .chat-message.ai .message-bubble {
+            background-color: #e5e7eb;
+            color: #1f2937;
+            border-radius: 1rem 1rem 1rem 0;
+            max-width: 70%;
+            padding: 0.75rem;
+        }
+        
+        .chat-input {
+            display: flex;
+            padding: 1rem;
+            border-top: 1px solid #e5e7eb;
+            background-color: white;
+        }
+
+        .chat-input input {
+            flex-grow: 1;
+            border: 1px solid #d1d5db;
+            border-radius: 9999px;
+            padding: 0.75rem 1.25rem;
+            margin-right: 0.5rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .chat-input input:focus {
+            border-color: #2563eb;
+        }
+
+        .chat-input button {
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 9999px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .chat-input button:hover {
+            background-color: #1e40af;
+        }
+
+        .error-message {
+            color: #ef4444;
+            text-align: center;
+            margin-top: 1rem;
+        }
+        
+        footer {
+            background-color: #e5e7eb;
+            text-align: center;
+            padding: 1rem;
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">Langua - Deutsch</div>
+        <nav>
+            <button id="home-btn" class="active">Home</button>
+            <button id="flashcards-btn">Flashcards</button>
+            <button id="grammar-btn">Grammar</button>
+            <button id="chat-btn">Chat (AI)</button>
+        </nav>
+    </header>
+
+    <main class="container">
+        <div id="app-content" class="content">
+            <!-- Content will be injected here by JavaScript -->
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Langua-App. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Main application logic
+        const contentDiv = document.getElementById('app-content');
+        const navButtons = document.querySelectorAll('nav button');
+        let chatHistory = [];
+        
+        const mockFlashcards = [
+            { german: "Guten Tag", english: "Good day" },
+            { german: "Ich bin", english: "I am" },
+            { german: "Wasser", english: "Water" },
+            { german: "Sprechen", english: "To speak" },
+            { german: "Bitte", english: "Please" },
+            { german: "Auto", english: "Car" },
+            { german: "Haus", english: "House" },
+        ];
+        let currentCardIndex = 0;
+        
+        // Function to render the home page
+        function renderHome() {
+            contentDiv.innerHTML = `
+                <div style="text-align: center;">
+                    <h1 style="font-size: 2.5rem; color: #2563eb; margin-bottom: 1rem;">Willkommen!</h1>
+                    <p style="font-size: 1.125rem; color: #4b5563; max-width: 600px; margin: 0 auto 2rem;">
+                        Welcome to your personal German learning space. Use the navigation to explore flashcards, grammar lessons, or a conversation with our AI tutor.
+                    </p>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                        <button onclick="document.getElementById('flashcards-btn').click();" style="background-color: white; border: none; padding: 1.5rem; border-radius: 1rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); cursor: pointer; text-align: center; transition: all 0.3s; transform: scale(1.0); font-weight: bold;">
+                            <span style="font-size: 3rem; display: block; margin-bottom: 0.5rem; color: #2563eb;">&#x1F526;</span>
+                            Flashcards
+                        </button>
+                        <button onclick="document.getElementById('grammar-btn').click();" style="background-color: white; border: none; padding: 1.5rem; border-radius: 1rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); cursor: pointer; text-align: center; transition: all 0.3s; transform: scale(1.0); font-weight: bold;">
+                            <span style="font-size: 3rem; display: block; margin-bottom: 0.5rem; color: #2563eb;">&#x1F58A;</span>
+                            Grammar
+                        </button>
+                        <button onclick="document.getElementById('chat-btn').click();" style="background-color: white; border: none; padding: 1.5rem; border-radius: 1rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); cursor: pointer; text-align: center; transition: all 0.3s; transform: scale(1.0); font-weight: bold;">
+                            <span style="font-size: 3rem; display: block; margin-bottom: 0.5rem; color: #2563eb;">&#x1F916;</span>
+                            Chat (AI)
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Function to render the flashcards page
+        function renderFlashcards() {
+            contentDiv.innerHTML = `
+                <h2 style="font-size: 2rem; text-align: center; color: #2563eb;">German Flashcards</h2>
+                <div class="card-container">
+                    <div id="flashcard" class="flashcard">
+                        <div class="flashcard-inner">
+                            <div class="flashcard-front">
+                                <h3 id="flashcard-front-text" style="font-size: 2.25rem; font-weight: 600; color: #4b5563;"></h3>
+                            </div>
+                            <div class="flashcard-back">
+                                <h3 id="flashcard-back-text" style="font-size: 2.25rem; font-weight: 600; color: #1e40af;"></h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-controls">
+                        <button id="prev-btn">Previous</button>
+                        <button id="next-btn">Next</button>
+                    </div>
+                </div>
+            `;
+            const flashcard = document.getElementById('flashcard');
+            const frontText = document.getElementById('flashcard-front-text');
+            const backText = document.getElementById('flashcard-back-text');
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+
+            function updateCardContent() {
+                frontText.textContent = mockFlashcards[currentCardIndex].english;
+                backText.textContent = mockFlashcards[currentCardIndex].german;
+                flashcard.classList.remove('flipped');
+            }
+
+            flashcard.addEventListener('click', () => flashcard.classList.toggle('flipped'));
+            prevBtn.addEventListener('click', () => {
+                currentCardIndex = (currentCardIndex - 1 + mockFlashcards.length) % mockFlashcards.length;
+                updateCardContent();
+            });
+            nextBtn.addEventListener('click', () => {
+                currentCardIndex = (currentCardIndex + 1) % mockFlashcards.length;
+                updateCardContent();
+            });
+            updateCardContent();
+        }
+
+        // Function to render the grammar page
+        function renderGrammar() {
+            contentDiv.innerHTML = `
+                <h2 style="font-size: 2rem; text-align: center; color: #2563eb;">German Grammar Basics: Noun Genders</h2>
+                <p style="margin-bottom: 1rem;">
+                    Unlike English, German nouns have a grammatical gender: masculine, feminine, or neuter. These genders are indicated by the definite articles 'der', 'die', and 'das'.
+                </p>
+                <ul style="list-style-type: disc; padding-left: 2rem; margin-bottom: 1rem;">
+                    <li><span style="font-weight: 600;">Masculine:</span> The article is <span style="font-weight: bold;">der</span>. Example: <span style="font-style: italic;">der Mann</span> (the man).</li>
+                    <li><span style="font-weight: 600;">Feminine:</span> The article is <span style="font-weight: bold;">die</span>. Example: <span style="font-style: italic;">die Frau</span> (the woman).</li>
+                    <li><span style="font-weight: 600;">Neuter:</span> The article is <span style="font-weight: bold;">das</span>. Example: <span style="font-style: italic;">das Kind</span> (the child).</li>
+                </ul>
+            `;
+        }
+        
+        // Function to render the chat page
+        function renderChat() {
+            contentDiv.innerHTML = `
+                <h2 style="font-size: 2rem; text-align: center; color: #2563eb;">AI Tutor</h2>
+                <div class="chat-container">
+                    <div class="chat-history" id="chat-history">
+                        <div class="chat-message ai">
+                            <div class="message-bubble">Hello! I'm your German AI tutor. Feel free to ask me anything about German language, grammar, or culture.</div>
+                        </div>
+                    </div>
+                    <div class="chat-input">
+                        <input type="text" id="chat-input-field" placeholder="Say something in German...">
+                        <button id="send-btn">Send</button>
+                    </div>
+                </div>
+                <p id="error-message" class="error-message" style="display:none;"></p>
+            `;
+
+            const chatHistoryEl = document.getElementById('chat-history');
+            const chatInputField = document.getElementById('chat-input-field');
+            const sendBtn = document.getElementById('send-btn');
+            const errorMessageEl = document.getElementById('error-message');
+
+            const modelName = "gemini-2.5-flash-preview-05-20";
+            const apiKey = "";
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
+
+            // Function to display a message in the chat
+            function addMessageToChat(role, text) {
+                const messageEl = document.createElement('div');
+                messageEl.className = `chat-message ${role}`;
+                messageEl.innerHTML = `<div class="message-bubble">${text}</div>`;
+                chatHistoryEl.appendChild(messageEl);
+                chatHistoryEl.scrollTop = chatHistoryEl.scrollHeight; // Auto-scroll to the bottom
+            }
+
+            // Function to send a message to the AI
+            async function sendMessage() {
+                const userText = chatInputField.value.trim();
+                if (userText === "") return;
+
+                // Display user's message
+                addMessageToChat('user', userText);
+                chatInputField.value = '';
+
+                // Add user's message to chat history
+                chatHistory.push({ role: "user", parts: [{ text: userText }] });
+
+                // Display loading indicator
+                addMessageToChat('ai', '<div id="loading-indicator">Thinking...</div>');
+
+                // Prepare API request payload
+                const payload = { contents: chatHistory };
+
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    
+                    const result = await response.json();
+                    
+                    // Remove loading indicator
+                    const loadingIndicator = document.getElementById('loading-indicator');
+                    if(loadingIndicator) loadingIndicator.parentElement.parentElement.remove();
+                    
+                    if (result.candidates && result.candidates.length > 0 &&
+                        result.candidates[0].content && result.candidates[0].content.parts &&
+                        result.candidates[0].content.parts.length > 0) {
+                        const aiText = result.candidates[0].content.parts[0].text;
+                        addMessageToChat('ai', aiText);
+                        chatHistory.push({ role: "model", parts: [{ text: aiText }] });
+                    } else {
+                        throw new Error("Invalid response format from API.");
+                    }
+                } catch (error) {
+                    // Remove loading indicator on error
+                    const loadingIndicator = document.getElementById('loading-indicator');
+                    if(loadingIndicator) loadingIndicator.parentElement.parentElement.remove();
+                    
+                    console.error("API call failed:", error);
+                    errorMessageEl.textContent = "An error occurred. Please try again.";
+                    errorMessageEl.style.display = 'block';
+                }
+            }
+
+            sendBtn.addEventListener('click', sendMessage);
+            chatInputField.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+
+            // Initialize chat history with the welcome message
+            chatHistory = [{
+                role: "model",
+                parts: [{ text: "Hello! I'm your German AI tutor. Feel free to ask me anything about German language, grammar, or culture." }]
+            }];
+        }
+
+        function setActiveButton(btn) {
+            navButtons.forEach(button => button.classList.remove('active'));
+            btn.classList.add('active');
+        }
+
+        function navigate(view) {
+            if (view === 'home') {
+                renderHome();
+            } else if (view === 'flashcards') {
+                renderFlashcards();
+            } else if (view === 'grammar') {
+                renderGrammar();
+            } else if (view === 'chat') {
+                renderChat();
+            }
+        }
+
+        // Event listeners for navigation
+        document.getElementById('home-btn').addEventListener('click', (e) => {
+            navigate('home');
+            setActiveButton(e.target);
+        });
+        document.getElementById('flashcards-btn').addEventListener('click', (e) => {
+            navigate('flashcards');
+            setActiveButton(e.target);
+        });
+        document.getElementById('grammar-btn').addEventListener('click', (e) => {
+            navigate('grammar');
+            setActiveButton(e.target);
+        });
+        document.getElementById('chat-btn').addEventListener('click', (e) => {
+            navigate('chat');
+            setActiveButton(e.target);
+        });
+        
+        // Initial page load
+        renderHome();
+    </script>
+</body>
+</html>
